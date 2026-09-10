@@ -37,4 +37,16 @@ def test_by_ingredient_mealdb_error(client, monkeypatch):
     assert response.status_code == 500
     assert response.json() == {"detail": "Erro de teste"}
 
+def test_by_ingredient_empty(client, monkeypatch):
+    mock_meal_data_list = []
+
+    async def mock_search_by_ingredient_empty(ingredient: str):
+        assert ingredient == "empty_test"
+        return mock_meal_data_list
+
+    monkeypatch.setattr("app.routes.filter_by_ingredient", mock_search_by_ingredient_empty)
+    response = client.get("/recipes/by-ingredient?ingredient=empty_test")
+
+    assert response.status_code == 200
+    assert response.json() == []
     
